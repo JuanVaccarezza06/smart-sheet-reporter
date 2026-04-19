@@ -1,0 +1,208 @@
+<div class="min-h-screen bg-slate-50 flex flex-col items-center py-12 px-4 sm:px-6 lg:px-8">
+  <div class="text-center mb-10">
+    <h1 class="text-3xl font-extrabold text-slate-900 tracking-tight">Smart Sheet Reporter</h1>
+    <p class="mt-2 text-sm text-slate-600">Generador de Documentos Automatizado</p>
+  </div>
+
+  <div class="bg-white rounded-2xl shadow-xl w-full max-w-4xl p-8 border border-slate-100">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <div class="flex flex-col gap-2">
+        <label class="font-semibold text-slate-700">1. Planilla de Datos</label>
+
+        @if (!excelFile) {
+          <label
+            class="flex flex-col items-center justify-center w-full h-48 border-2 border-dashed rounded-xl cursor-pointer transition-colors"
+            [class.border-green-500]="isDraggingExcel"
+            [class.bg-green-50]="isDraggingExcel"
+            [class.border-slate-300]="!isDraggingExcel"
+            [class.hover:bg-slate-50]="!isDraggingExcel"
+            (dragover)="onDragOver($event, 'excel')"
+            (dragleave)="onDragLeave($event, 'excel')"
+            (drop)="onDrop($event, 'excel')"
+          >
+            <div class="flex flex-col items-center justify-center pt-5 pb-6">
+              <svg
+                class="w-10 h-10 mb-3 text-green-600"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                ></path>
+              </svg>
+              <p class="mb-2 text-sm text-slate-500">
+                <span class="font-semibold">Haz clic para subir</span> o arrastra y suelta
+              </p>
+              <p class="text-xs text-slate-400">Solo archivos .xlsx</p>
+            </div>
+            <input
+              type="file"
+              class="hidden"
+              accept=".xlsx, .xls"
+              (change)="onFileSelected($event, 'excel')"
+            />
+          </label>
+        } @else {
+          <div
+            class="flex items-center justify-between w-full p-4 border-2 border-green-500 bg-green-50 rounded-xl"
+          >
+            <div class="flex items-center gap-3 truncate">
+              <svg
+                class="w-8 h-8 text-green-600 flex-shrink-0"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                ></path>
+              </svg>
+              <span class="text-sm font-medium text-slate-700 truncate">{{ excelFile.name }}</span>
+            </div>
+            <button
+              (click)="removeFile('excel')"
+              class="text-slate-400 hover:text-red-500 transition-colors"
+            >
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                ></path>
+              </svg>
+            </button>
+          </div>
+        }
+      </div>
+
+      <div class="flex flex-col gap-2">
+        <label class="font-semibold text-slate-700">2. Plantilla de Texto</label>
+
+        @if (!templateFile) {
+          <label
+            class="flex flex-col items-center justify-center w-full h-48 border-2 border-dashed rounded-xl cursor-pointer transition-colors"
+            [class.border-blue-500]="isDraggingTemplate"
+            [class.bg-blue-50]="isDraggingTemplate"
+            [class.border-slate-300]="!isDraggingTemplate"
+            [class.hover:bg-slate-50]="!isDraggingTemplate"
+            (dragover)="onDragOver($event, 'template')"
+            (dragleave)="onDragLeave($event, 'template')"
+            (drop)="onDrop($event, 'template')"
+          >
+            <div class="flex flex-col items-center justify-center pt-5 pb-6">
+              <svg
+                class="w-10 h-10 mb-3 text-blue-600"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                ></path>
+              </svg>
+              <p class="mb-2 text-sm text-slate-500">
+                <span class="font-semibold">Haz clic para subir</span> o arrastra y suelta
+              </p>
+              <p class="text-xs text-slate-400">Solo archivos .docx</p>
+            </div>
+            <input
+              type="file"
+              class="hidden"
+              accept=".docx, .doc"
+              (change)="onFileSelected($event, 'template')"
+            />
+          </label>
+        } @else {
+          <div
+            class="flex items-center justify-between w-full p-4 border-2 border-blue-500 bg-blue-50 rounded-xl"
+          >
+            <div class="flex items-center gap-3 truncate">
+              <svg
+                class="w-8 h-8 text-blue-600 flex-shrink-0"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                ></path>
+              </svg>
+              <span class="text-sm font-medium text-slate-700 truncate">{{
+                templateFile.name
+              }}</span>
+            </div>
+            <button
+              (click)="removeFile('template')"
+              class="text-slate-400 hover:text-red-500 transition-colors"
+            >
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                ></path>
+              </svg>
+            </button>
+          </div>
+        }
+      </div>
+    </div>
+
+    <div class="mt-10">
+      <button
+        (click)="generateDocuments()"
+        [disabled]="!excelFile || !templateFile || isLoading"
+        class="w-full flex justify-center items-center p-4 text-lg font-bold text-white rounded-xl transition-all duration-200 bg-indigo-600 hover:bg-indigo-700 shadow-md hover:shadow-lg disabled:bg-slate-300 disabled:shadow-none disabled:cursor-not-allowed disabled:hover:bg-slate-300"
+      >
+        @if (isLoading) {
+          <svg
+            class="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+          >
+            <circle
+              class="opacity-25"
+              cx="12"
+              cy="12"
+              r="10"
+              stroke="currentColor"
+              stroke-width="4"
+            ></circle>
+            <path
+              class="opacity-75"
+              fill="currentColor"
+              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+            ></path>
+          </svg>
+          Procesando...
+        } @else {
+          Generar Documentos
+        }
+      </button>
+
+      @if (!excelFile || !templateFile) {
+        <p class="text-center text-xs text-slate-400 mt-3">
+          Sube ambos archivos para habilitar la generación.
+        </p>
+      }
+    </div>
+  </div>
+</div>
